@@ -24,8 +24,8 @@ jobs:
       # 3. Install Databricks CLI
       - name: Install Databricks CLI
         run: |
-          pip install --upgrade pip
-          pip install databricks-cli
+          curl -fsSL https://raw.githubusercontent.com/databricks/setup-cli/main/install.sh | sh
+          databricks --version
 
       # 4. Configure Databricks CLI using Service Principal OAuth
       - name: Configure Databricks CLI with Service Principal
