@@ -1,0 +1,53 @@
+name: Databricks Bundle CI/CD
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - master
+
+jobs:
+  databricks:
+    runs-on: ubuntu-latest
+    steps:
+      # 1. Checkout repo
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # 2. Set up Python (Databricks CLI requires Python)
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.11'
+
+      # 3. Install Databricks CLI
+      - name: Install Databricks CLI
+        run: |
+          pip install --upgrade pip
+          pip install databricks-cli
+
+      # 4. Configure Databricks CLI using Service Principal OAuth
+      - name: Configure Databricks CLI with Service Principal
+        run: |
+          export DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}"
+          export DATABRICKS_CLIENT_ID="${{ secrets.DATABRICKS_CLIENT_ID }}"
+          export DATABRICKS_CLIENT_SECRET="${{ secrets.DATABRICKS_CLIENT_SECRET }}"
+          export DATABRICKS_TOKEN=""
+          # Optional for Azure
+          # export DATABRICKS_TENANT_ID="${{ secrets.DATABRICKS_TENANT_ID }}"
+
+      # 5. Run validation on PRs
+      - name: Validate bundle (PRs)
+        if: github.event_name == 'pull_request'
+        run: |
+          cd technical-support-overview-bundle
+          databricks bundle validate
+
+      # 6. Deploy on merges to master
+      - name: Deploy bundle (master)
+        if: github.event_name == 'push'
+        run: |
+          cd technical-support-overview-bundle
+          databricks bundle validate
+          #databricks bundle deploy --target prod
