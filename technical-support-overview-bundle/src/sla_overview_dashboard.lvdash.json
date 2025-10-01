@@ -4,7 +4,6 @@
       "name": "39a5402c",
       "displayName": "Support Data",
       "queryLines": [
-        "-- CTE to get the top 5 topics by the number of tickets\n",
         "WITH TopTopics AS (\n",
         "  SELECT\n",
         "    Topic\n",
@@ -16,7 +15,7 @@
         "    COUNT(`Ticket ID`) DESC\n",
         "  LIMIT\n",
         "    5\n",
-        "), -- CTE to get the top 4 countries by the number of tickets\n",
+        "),\n",
         "TopCountries AS (\n",
         "  SELECT\n",
         "    Country\n",
@@ -28,33 +27,33 @@
         "    COUNT(`Ticket ID`) DESC\n",
         "  LIMIT\n",
         "    4\n",
-        ") -- Main query to select data from the technical support dataset\n",
+        ")\n",
         "SELECT\n",
         "  *,\n",
-        "  -- Calculate the resolution time in hours, adding a random adjustment for Tier 2 support level\n",
         "  (\n",
-        "    TIMESTAMPDIFF(MINUTE, `Created time`, `Resolution time`) + CASE\n",
+        "    TIMESTAMPDIFF(\n",
+        "      MINUTE,\n",
+        "      try_cast(`Created time` AS TIMESTAMP),\n",
+        "      try_cast(`Resolution time` AS TIMESTAMP)\n",
+        "    ) +\n",
+        "    CASE\n",
         "      WHEN `Support Level` = 'Tier 2' THEN FLOOR(3000 + (RAND() * (3000 - 2400)))\n",
         "      ELSE 0\n",
         "    END\n",
         "  ) / 60.0 AS `Resolution Time`\n",
         "FROM\n",
-        "  main.samples.technical_support_dataset -- Filter to include only tickets with top topics\n",
+        "  main.samples.technical_support_dataset\n",
         "WHERE\n",
-        "  Topic IN (\n",
-        "    SELECT\n",
-        "      Topic\n",
-        "    FROM\n",
-        "      TopTopics\n",
-        "  ) -- Filter to include only tickets from top countries\n",
-        "  AND Country IN (\n",
-        "    SELECT\n",
-        "      Country\n",
-        "    FROM\n",
-        "      TopCountries\n",
-        "  ) -- Exclude tickets where the resolution time is zero\n",
-        "  AND TIMESTAMPDIFF(MINUTE, `Created time`, `Resolution time`) != 0"
-      ]
+        "  Topic IN (SELECT Topic FROM TopTopics)\n",
+        "  AND Country IN (SELECT Country FROM TopCountries)\n",
+        "  AND TIMESTAMPDIFF(\n",
+        "        MINUTE,\n",
+        "        try_cast(`Created time` AS TIMESTAMP),\n",
+        "        try_cast(`Resolution time` AS TIMESTAMP)\n",
+        "      ) != 0"
+      ],
+      "catalog": "main",
+      "schema": "samples"
     },
     {
       "name": "916033f4",
@@ -1773,5 +1772,10 @@
       ],
       "pageType": "PAGE_TYPE_CANVAS"
     }
-  ]
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    }
+  }
 }
