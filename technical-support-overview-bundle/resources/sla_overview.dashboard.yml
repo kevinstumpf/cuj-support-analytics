@@ -1,7 +1,7 @@
 resources:
   dashboards:
     sla_overview:
-      display_name: "KS Deployed SLA Overview Dashboard23"
+      display_name: "KS Deployed SLA Overview Dashboard New Name!"
 
 
 
