@@ -5,7 +5,7 @@ on:
     types: [opened, synchronize, reopened]
   push:
     branches:
-      - master
+      - main
 
 jobs:
   databricks:
@@ -38,8 +38,8 @@ jobs:
           cd technical-support-overview-bundle
           databricks bundle validate
 
-      # 6. Deploy on merges to master
-      - name: Deploy bundle (master)
+      # 6. Deploy on merges to main
+      - name: Deploy bundle (main)
         if: github.event_name == 'push'
         run: |
           export DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}"
