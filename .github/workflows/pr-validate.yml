@@ -42,6 +42,9 @@ jobs:
       - name: Deploy bundle (master)
         if: github.event_name == 'push'
         run: |
+          export DATABRICKS_HOST="${{ secrets.DATABRICKS_HOST }}"
+          export DATABRICKS_CLIENT_ID="${{ secrets.DATABRICKS_CLIENT_ID }}"
+          export DATABRICKS_CLIENT_SECRET="${{ secrets.DATABRICKS_CLIENT_SECRET }}"
+          export DATABRICKS_ACCOUNT_ID="${{ secrets.DATABRICKS_ACCOUNT_ID }}"
           cd technical-support-overview-bundle
-          databricks bundle validate
-          #databricks bundle deploy --target prod
+          databricks bundle deploy --target prod --auto-approve
