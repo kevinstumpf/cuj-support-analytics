@@ -1,4 +1,4 @@
-# Databricks Asset Bundle configuration, more info here: https://docs.databricks.com/en/dev-tools/bundles/settings.html
+# Databricks Asset Bundle configuration, more info here: https://docs.databricks.com/en/dev-tools/bundles/settings.html #
 bundle:
   name: "technical-support-overview-bundle"
 
