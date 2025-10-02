@@ -1,10 +1,16 @@
-# Databricks Asset Bundle configuration, more info here: https://docs.databricks.com/en/dev-tools/bundles/settings.html ##
+# Databricks Asset Bundle configuration, more info here: https://docs.databricks.com/en/dev-tools/bundles/settings.html
 bundle:
   name: "technical-support-overview-bundle"
 
 include:
   - resources/*.yml
   - resources/*/*.yml
+
+permissions:
+  - user_name: kevin.stumpf@databricks.com
+    level: CAN_MANAGE
+  - service_principal_name: 6993725b-2be4-41a4-98a8-644149bc9aa2
+    level: CAN_MANAGE
 
 variables:
   # The "warehouse_id" variable is used to reference the warehouse used by the dashboard.
@@ -28,7 +34,7 @@ targets:
       host: https://dbc-f901bc35-74de.cloud.databricks.com
       # We always use /Users/kevin.stumpf@databricks.com for all resources to make sure we only have a single copy.
       root_path: /Users/kevin.stumpf@databricks.com/.bundle/${bundle.name}/${bundle.target}
-    run_as:
+    #run_as:
       # This runs as kevin.stumpf@databricks.com in production. We could also use a service principal here,
       # see https://docs.databricks.com/dev-tools/bundles/permissions.html.
-      user_name: kevin.stumpf@databricks.com
+      #user_name: kevin.stumpf@databricks.com
